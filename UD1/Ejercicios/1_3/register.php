@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h2>Registrarse en la Videoteca</h2>
+
+    <form action="" method="POST">
+        <label for="correo">Correo Electronico</label>
+        <input type="email" id="correo" name="correo"><br>
+
+        <label for="nick">User Nick</label>
+        <input type="text" id="nick" name="nick"><br>
+
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre"><br>
+
+        <label for="ape1">Primer Apellido</label>
+        <input type="text" id="ape1" name="ape1"><br>
+
+        <label for="ape2">Segundo Apellido</label>
+        <input type="text" id="ape2" name="ape2"><br>
+
+        <label for="passwd">Contrasena</label>
+        <input type="password" id="passwd" name="passwd"><br>
+    </form>
+</body>
+</html>
