@@ -8,11 +8,21 @@ $ape1 = $_POST['ape1'] ?? null;
 $ape2 = $_POST['ape2'] ?? null;
 $pwd = $_POST['passwd'] ?? null;
 
-if (isset($correo) && isset($nick) && isset($pwd)) {
+if (!empty($correo) && !empty($nick) && !empty($pwd)) {
     $pwd = password_hash($pwd, PASSWORD_DEFAULT);
+    $db = crearConexion();
 
-    $sql = "INSERT INTO registro(correo,userNick,nombre,apellido1,apellido2,password) VALUES('$correo','$nick','$nombre','$ape1','$ape2','$pwd')";
-    $resultado = $db->exec($sql);
+    $check = $db->prepare("SELECT * FROM registro WHERE correo = ? OR userNick = ?");
+    $check->execute([$correo, $nick]);
+    if ($check->rowCount() > 0) {
+        echo "Ya existe un usuario con ese correo o nick.";
+    } else {
+        $sql = "INSERT INTO registro (correo, userNick, nombre, apellido1, apellido2, password)
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$correo, $nick, $nombre, $ape1, $ape2, $pwd]);
+        echo "Registro completado. <a href='login.php'>Inicia sesión</a>";
+    }
 
     $db = null;
 }

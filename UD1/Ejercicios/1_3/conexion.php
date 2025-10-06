@@ -1,10 +1,14 @@
 <?php
 //Establecer cnxion
-$dsn = "mysql:host=mariadb;dbname=mi_base_de_datos";
+function crearConexion(){
+    $dsn = "mysql:host=mariadb;dbname=videoteca";
 
-try{
-    $db = new PDO($dsn,"root","bitnami");
-} catch(PDOException $ex){
-    echo "Se ha producido un error";
-    die();
+    try{
+        $db = new PDO($dsn,"root","bitnami");
+            return $db;
+    } catch(PDOException $ex){
+        echo "Se ha producido un error";
+        die();
+    }
+
 }

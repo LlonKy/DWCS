@@ -3,11 +3,22 @@ include_once "conexion.php";
 
 $correo = $_POST['correo'] ?? null;
 $pwd = $_POST['passwd'] ?? null;
+$mensaje = "";
 
 if (isset($correo) && isset($pwd)) {
-    $pwd = password_hash($pwd, PASSWORD_DEFAULT);
-    $sql = "SELECT correo, password FROM registro where correo = '$correo' and password = '$pwd'";
-    $resultado = $db->exec($sql);
+    $db = crearConexion();
+    $sql = "SELECT password FROM registro where correo = '$correo'";
+    $resultado = $db->query($sql);
+
+    $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
+
+    if ($usuario && password_verify($pwd,$usuario['password'])) {
+        $mensaje = "Bienvenido";
+    } else {
+        $mensaje = "Correo o contrasenia incorrectos";
+    }
+
+    echo $mensaje;
    
 }
 
