@@ -5,24 +5,22 @@ $correo = $_POST['correo'] ?? null;
 $pwd = $_POST['passwd'] ?? null;
 $mensaje = "";
 
-if (isset($correo) && isset($pwd)) {
+if (!empty($correo) && !empty($pwd)) {
     $db = crearConexion();
-    $sql = "SELECT password FROM registro where correo = '$correo'";
-    $resultado = $db->query($sql);
 
-    $usuario = $resultado->fetch(PDO::FETCH_ASSOC);
+    $sql = "SELECT password FROM registro WHERE correo = ?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$correo]);
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($usuario && password_verify($pwd,$usuario['password'])) {
-        $mensaje = "Bienvenido";
+    if ($usuario && password_verify($pwd, $usuario['password'])) {
+        $mensaje = "Bienvenido, has iniciado sesión correctamente.";
     } else {
-        $mensaje = "Correo o contrasenia incorrectos";
+        $mensaje = "Correo o contraseña incorrectos.";
     }
 
-    echo $mensaje;
-   
+    $db = null;
 }
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

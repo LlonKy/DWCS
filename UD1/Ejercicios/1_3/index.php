@@ -36,8 +36,8 @@ $db = null;
                 <td><?php echo($v['anio_lanzamiento'])?></td>
                 <td><?php echo($v['genero'])?></td>
                 <td>
-                    <a href="editar.php?id=<?php $v['id']?>">Editar</a>
-                    <a href="eliminar.php?id=<?php $v['id']?>">Eliminar</a>
+                    <a href="editar.php?id=<?php echo($v['id'])?>">Editar</a>
+                    <a href="eliminar.php?id=<?php echo($v['id'])?>">Eliminar</a>
                 </td>
             </tr>
             
