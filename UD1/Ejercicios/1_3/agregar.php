@@ -6,16 +6,24 @@ $plataforma = $_POST['plataforma'] ?? null;
 $anio = $_POST['anio'] ?? null;
 $genero = $_POST['genero'] ?? null;
 
-if (!empty($nombre) && !empty($plataforma) && !empty($anio) && !empty($genero)) {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!empty($nombre) && !empty($plataforma) && !empty($anio) && !empty($genero)) {
     $db = crearConexion();
 
     $sql = "INSERT INTO videojuegos (nombre,plataforma,anio_lanzamiento,genero) VALUES (?, ?, ?, ?)";
     $stmt = $db->prepare($sql);
-    $stmt->execute([$nombre, $plataforma, $anio, $genero]);
+    $resultado = $stmt->execute([$nombre, $plataforma, $anio, $genero]);
     $db = null;
-} else {
+
+    } else {
     $mensaje = "Todos los campos son obligatorios";
+    }
+
+    if ($resultado) {
+    header('Location: /Ejercicios/1_3/index.php');
 }
+}
+
 ?>
 
 <!DOCTYPE html>

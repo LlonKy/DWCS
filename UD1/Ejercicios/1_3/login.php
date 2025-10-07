@@ -4,8 +4,8 @@ include_once "conexion.php";
 $correo = $_POST['correo'] ?? null;
 $pwd = $_POST['passwd'] ?? null;
 $mensaje = "";
-
-if (!empty($correo) && !empty($pwd)) {
+if ($_SERVER["REQUEST_METHOD"] === "POST"){
+    if (!empty($correo) && !empty($pwd)) {
     $db = crearConexion();
 
     $sql = "SELECT password FROM registro WHERE correo = ?";
@@ -21,6 +21,8 @@ if (!empty($correo) && !empty($pwd)) {
 
     $db = null;
 }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

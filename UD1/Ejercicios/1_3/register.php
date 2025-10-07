@@ -8,7 +8,8 @@ $ape1 = $_POST['ape1'] ?? null;
 $ape2 = $_POST['ape2'] ?? null;
 $pwd = $_POST['passwd'] ?? null;
 
-if (!empty($correo) && !empty($nick) && !empty($pwd)) {
+if ($_SERVER["REQUEST_METHOD"] === "POST"){
+    if (!empty($correo) && !empty($nick) && !empty($pwd)) {
     $pwd = password_hash($pwd, PASSWORD_DEFAULT);
     $db = crearConexion();
 
@@ -26,6 +27,8 @@ if (!empty($correo) && !empty($nick) && !empty($pwd)) {
 
     $db = null;
 }
+}
+
 ?>
 
 <!DOCTYPE html>

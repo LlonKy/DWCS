@@ -20,13 +20,18 @@ if (!$videojuego) {
     die("Videojuego no encontrado");
 }
 
-if (!empty($nombre) && !empty($plataforma) && !empty($anio) && !empty($genero)) {
-    $sql = "UPDATE videojuegos SET nombre=?, plataforma=?,anio_lanzamiento=?,genero=? WHERE id=?";
-    $stmt = $db->prepare($sql);
-    $stmt->execute([$nombre,$plataforma,$anio,$genero,$id]);
+if ($_SERVER["REQUEST_METHOD"] === "POST"){
+    if (!empty($nombre) && !empty($plataforma) && !empty($anio) && !empty($genero)) {
+        $sql = "UPDATE videojuegos SET nombre=?, plataforma=?,anio_lanzamiento=?,genero=? WHERE id=?";
+        $stmt = $db->prepare($sql);
+        $resultado = $stmt->execute([$nombre,$plataforma,$anio,$genero,$id]);
+    }
 }
-
 $db = null;
+
+if ($resultado) {
+    header('Location: /Ejercicios/1_3/index.php');
+}
 
 ?>
 
@@ -40,7 +45,7 @@ $db = null;
 <body>
 <h2>Editar videojuego</h2>
 
-<form method="POST">
+<form method="POST" action="">
     <label>Nombre:</label>
     <input type="text" name="nombre" value="<?php echo ($videojuego['nombre'])?>" required><br>
 
