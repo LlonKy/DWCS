@@ -21,7 +21,6 @@ $db = null;
     <a href="agregar.php">Agregar un nuevo videojuego</a><br>
     <table>
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Plataforma</th>
             <th>Anio Lanzamiento</th>
@@ -30,7 +29,6 @@ $db = null;
         </tr>
         <?php foreach ($videojuegos as $v): ?>
             <tr>
-                <td><?php echo ($v['id'])?></td>
                 <td><?php echo($v['nombre'])?></td>
                 <td><?php echo($v['plataforma'])?></td>
                 <td><?php echo($v['anio_lanzamiento'])?></td>
