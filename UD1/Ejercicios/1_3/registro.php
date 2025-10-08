@@ -1,68 +1,106 @@
 <?php
-include_once "conexion.php";
+include_once "usuarios_db.php";
+//Recuperar parametros
+$nombre = $_POST['nombre'] ?? '';
+$ap1 = $_POST['ape1'] ?? '';
+$ap2 = $_POST['ape2'] ?? '';
+$nic = $_POST['nic'] ?? '';
+$mail = $_POST['mail'] ?? '';
+$pass = $_POST['pass'] ?? '';
+$pass2 = $_POST['pass2'] ?? '';
+if ($_SERVER["REQUEST_METHOD"] == 'POST') {
+    $errores = [];
 
-$correo = $_POST['correo'] ?? null;
-$nick = $_POST['nick'] ?? null;
-$nombre = $_POST['nombre'] ?? null;
-$ape1 = $_POST['ape1'] ?? null;
-$ape2 = $_POST['ape2'] ?? null;
-$pwd = $_POST['passwd'] ?? null;
-
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
-    if (!empty($correo) && !empty($nick) && !empty($pwd)) {
-    $pwd = password_hash($pwd, PASSWORD_DEFAULT);
-    $db = crearConexion();
-
-    $check = $db->prepare("SELECT * FROM registro WHERE correo = ? OR userNick = ?");
-    $check->execute([$correo, $nick]);
-    if ($check->rowCount() > 0) {
-        echo "Ya existe un usuario con ese correo o nick.";
-    } else {
-        $sql = "INSERT INTO registro (correo, userNick, nombre, apellido1, apellido2, password)
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([$correo, $nick, $nombre, $ape1, $ape2, $pwd]);
-        echo "Registro completado. <a href='login.php'>Inicia sesión</a>";
+    if ($nombre === '') {
+        $errores[] = "El nombre es obligatorio";
     }
 
-    $db = null;
+    if ($ap1 === '') {
+        $errores[] = "El primer apellido es obligatorio";
+    }
+
+    if ($nic === '') {
+        $errores[] = "El nic es obligatorio";
+    }
+
+    if (empty($mail)) {
+        $errores[] = "El correo es obligatorio";
+    }
+
+    if ($pass === '') {
+        $errores[] = "Tienes que poner una contraseña";
+    }
+
+    //Comprobar contraseñas iguales.
+
+    if (empty($pass2) || empty($pass) || $pass !== $pass2) {
+        $errores[] = "Las contraseñas no coinciden";
+    }
+    if (count($errores) == 0) {
+        //Comprobar que el nic no existe.
+        if(getUsuario($nic)){
+            $errores[] = "El nic $nic ya está registrado. Utiliza otro.";
+        }else{
+            //Registrar en la base de datos.
+            addUser($nic, $nombre,$ap1, $ap2, $mail, $pass);
+        }
+        
+    }
 }
-}
+
 
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Registro</title>
 </head>
+
 <body>
-    <h2>Registrarse en la Videoteca</h2>
-
     <form action="" method="POST">
-        <label for="correo">Correo Electronico</label>
-        <input type="email" id="correo" name="correo"><br>
-
-        <label for="nick">User Nick</label>
-        <input type="text" id="nick" name="nick"><br>
-
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre"><br>
+        <input type="text" name="nombre" value="<?php echo $nombre; ?>"><br>
 
-        <label for="ape1">Primer Apellido</label>
-        <input type="text" id="ape1" name="ape1"><br>
+        <label for="ape1">Apellido 1</label>
+        <input type="text" name="ape1" value="<?= $ap1 ?>"><br>
 
-        <label for="ape2">Segundo Apellido</label>
-        <input type="text" id="ape2" name="ape2"><br>
+        <label for="ape2">Apellido 2</label>
+        <input type="text" name="ape2" value="<?= $ap2 ?>"><br>
 
-        <label for="passwd">Contrasena</label>
-        <input type="password" id="passwd" name="passwd"><br>
+        <label for="nic">Nic</label>
+        <input type="text" name="nic" value="<?= $nic ?>"><br>
 
-        <button type="submit">Registrarse</button><br>
+        <label for="mail">Correo</label>
+        <input type="text" name="mail" value="<?= $mail ?>"><br>
 
-        <a href="login.php">Ya estás registrado?</a>
+        <label for="pass">Contraseña</label>
+        <input type="password" name="pass"><br>
+
+        <label for="pass2">Repita contraseña</label>
+        <input type="password" name="pass2"><br>
+
+        <button type="submit">Registrar</button>
     </form>
+    <div class="resultado">
+        <?php
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (count($errores) > 0) {
+                echo "Errores encontrados:<ul>";
+                foreach ($errores as $er) {
+                    echo "<li>$er</li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "<h1>Usuario $nic registrado!</h1>";
+            }
+        }
+
+        ?>
+    </div>
+    <a href="login.php">Login</a>
 </body>
+
 </html>

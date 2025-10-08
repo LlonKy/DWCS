@@ -1,66 +1,51 @@
 <?php
-include_once "conexion.php";
-$db = crearConexion();
-
-$id = $_GET['id'] ?? null;
-$nombre = $_POST['nombre'];
-$plataforma = $_POST['plataforma'];
-$anio = $_POST['anio'];
-$genero = $_POST['genero'];
-
-if (!$id) {
-   die("Id no proporcionado");
+include_once "acceso_datos.php";
+//Utilizo $_REQUEST para que obtenga el parámetro con independencia de si llega por get o por POST
+if (isset($_REQUEST["id"])) {
+    $v = getVideojuego($_GET["id"]);
 }
 
-$stmt = $db->prepare("SELECT * FROM videojuegos where id = ?");
-$stmt->execute([$id]);
-$videojuego = $stmt->fetch(PDO::FETCH_ASSOC);
+//Si entro por POST, actualizo los valores en la base de datos.
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $v->setNombre($_POST['nombre'])
+        ->setLanzamiento($_POST['lanzamiento'])
+        ->setPlataforma($_POST['plataforma'])
+        ->setGenero(empty($_POST['genero']) ? null : $_POST['genero']);
+    //Guardamos los cambios y avisamos al usuario.
+    $m = "No se ha podido modificar el videojuego";
+    if (updateVideojuego($v)) {
+        $m = "El videojuego se ha modificado";
 
-if (!$videojuego) {
-    die("Videojuego no encontrado");
-}
-
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
-    if (!empty($nombre) && !empty($plataforma) && !empty($anio) && !empty($genero)) {
-        $sql = "UPDATE videojuegos SET nombre=?, plataforma=?,anio_lanzamiento=?,genero=? WHERE id=?";
-        $stmt = $db->prepare($sql);
-        $resultado = $stmt->execute([$nombre,$plataforma,$anio,$genero,$id]);
     }
-}
-$db = null;
+    echo '<script>alert("', $m, '")</script>';
 
-if ($resultado) {
-    header('Location: /Ejercicios/1_3/index.php');
 }
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<title>Editar Videojuego</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar </title>
 </head>
+
 <body>
-<h2>Editar videojuego</h2>
+    <!-- Al parametrizar el action de esta forma mantenemos el id al hacer el post. -->
+    <form action="?id=<?= $v->getId() ?>" method="POST">
+        <label for="nombre">Nombre</label>
+        <!-- Asignamos el valor actual a todos los input -->
+        <input type="text" name="nombre" required value="<?= $v->getNombre() ?>"><br>
+        <label for="plataforma">Plataforma</label>
+        <input type="text" name="plataforma" required value="<?= $v->getPlataforma() ?>"><br>
+        <label for="lanzamiento">Año de lanzamiento</label>
+        <input type="number" name="lanzamiento" required value="<?= $v->getLanzamiento() ?>"><br>
+        <label for="genero">Género</label>
+        <input type="text" name="genero" value="<?= $v->getGenero() ?? "" ?>"><br>
+        <button type="submit">Guardar</button>
+        <a href="listar.php">Cancelar</a>
+    </form>
 
-<form method="POST" action="">
-    <label>Nombre:</label>
-    <input type="text" name="nombre" value="<?php echo ($videojuego['nombre'])?>" required><br>
-
-    <label>Plataforma:</label>
-    <input type="text" name="plataforma" value="<?php echo ($videojuego['plataforma']) ?>" required><br>
-
-    <label>Año de lanzamiento:</label>
-    <input type="number" name="anio" value="<?php echo($videojuego['anio_lanzamiento']) ?>" required><br>
-
-    <label>Genero:</label>
-    <input type="text" name="genero" value="<?php echo($videojuego['genero']) ?>" required><br>
-
-    <button type="submit">Guardar cambios</button>
-</form>
-
-<a href="index.php">Volver</a>
 </body>
+
 </html>
