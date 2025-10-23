@@ -1,8 +1,8 @@
 <?php
 session_start();
-if ($_SERVER["REQUEST_METHOD" == "POST"]) {
-    session_destroy();
+if (!isset($_SESSION['nic'])) {
     header("Location: login.php");
+    exit;
 }
 ?>
 
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD" == "POST"]) {
 </head>
 <body>
     <h1>Sección restringida</h1>
-    Estás logueado con el usuario <?php $_SESSION['nic']?>. Pulsa aquí para salir: <a href="">Logout</a>
+    Estás logueado con el usuario <?php echo $_SESSION['nic']?>. Pulsa aquí para salir: <a href="logout.php">Logout</a>
     <p>
         Esta sección esta restringida solo para los usuarios que están registrados.
     </p>

@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_COOKIE)) {
      setcookie("estilo",$estilo,time()+604800);
  }
 
-
 ?>
 
 <!DOCTYPE html>

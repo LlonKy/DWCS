@@ -1,9 +1,21 @@
 <?php
 include_once "funciones.php";
-if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_POST['pass'])) {
-    session_start();
-    $_SESSION["nic"] = $_POST['nic'];
-    $_SESSION["pass"] = $_POST['pass'];
+session_start();
+$recordar = $_POST['recordar'] ?? null;
+
+if (isset($_SESSION['nic'])) {
+    header("Location: restringido.php");
+    exit;
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_POST['pass']) && isset($recordar)) {
+    $_SESSION['nic'] = $_POST['nic'];
+    $_SESSION['pass'] = $_POST['pass'];
+    setcookie("COOKIE_RECORDAR", $_SESSION['nic'], time()+86400*30);
+    header("Location: restringido.php");
+} elseif ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_POST['pass'])) {
+    $_SESSION['nic'] = $_POST['nic'];
+    $_SESSION['pass'] = $_POST['pass'];
     header("Location: restringido.php");
 }
 
@@ -21,9 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_PO
     <fieldset>
         <form action="" method="post">
             <label for="nic">Nombre de usuario (nic)</label><br>
-            <input type="text" name="nic"><br>
+            <input type="text" name="nic" value = "<?php if (isset($_COOKIE['COOKIE_RECORDAR'])) {
+                echo $_COOKIE['COOKIE_RECORDAR'];
+            }?>"><br>
             <label for="pass">Contraseña</label><br>
             <input type="password" name="pass"><br>
+            <label for="recordar">Recuerdame</label>
+            <input type="checkbox" id ="recordar" name="recordar"><br>
             <button type="submit">Acceder</button>
         </form>
     </fieldset>
