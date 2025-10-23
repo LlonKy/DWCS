@@ -1,6 +1,13 @@
 <?php
 include_once "funciones.php";
-session_start();
+session_start([ 
+        'cookie_path' => '/',
+        'cookie_lifetime' => 86400,
+        'cookie_secure' => true,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'login.php',
+    ]);
+
 $recordar = $_POST['recordar'] ?? null;
 
 if (isset($_SESSION['nic'])) {
