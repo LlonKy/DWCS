@@ -2,28 +2,28 @@
 include_once "funciones.php";
 session_start([ 
         'cookie_path' => '/',
-        'cookie_lifetime' => 86400,
+        'cookie_lifetime' => 600,
         'cookie_secure' => true,
         'cookie_httponly' => true,
         'cookie_samesite' => 'login.php',
     ]);
 
+
+
 $recordar = $_POST['recordar'] ?? null;
 
 if (isset($_SESSION['nic'])) {
-    header("Location: restringido.php");
+    header("Location: listar.php");
     exit;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_POST['pass']) && isset($recordar)) {
     $_SESSION['nic'] = $_POST['nic'];
-    $_SESSION['pass'] = $_POST['pass'];
-    setcookie("COOKIE_RECORDAR", $_SESSION['nic'], time()+86400*30);
-    header("Location: restringido.php");
+    setcookie("COOKIE_RECORDAR", $_SESSION['nic'], time()+84600 * 30);
+    header("Location: listar.php");
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_POST['pass'])) {
     $_SESSION['nic'] = $_POST['nic'];
-    $_SESSION['pass'] = $_POST['pass'];
-    header("Location: restringido.php");
+    header("Location: listar.php");
 }
 
 ?>
@@ -40,9 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($_POST['nic'],$_PO
     <fieldset>
         <form action="" method="post">
             <label for="nic">Nombre de usuario (nic)</label><br>
-            <input type="text" name="nic" value = "<?php if (isset($_COOKIE['COOKIE_RECORDAR'])) {
-                echo $_COOKIE['COOKIE_RECORDAR'];
-            }?>"><br>
+            <input type="text" name="nic"><br>
             <label for="pass">Contraseña</label><br>
             <input type="password" name="pass"><br>
             <label for="recordar">Recuerdame</label>
