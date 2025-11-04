@@ -4,8 +4,10 @@ include_once "funciones.php";
 $carrito = null;
 $producto = $_POST["producto"] ?? null;
 
-if ($producto) {
+if (!comprobar_producto($producto)) {
     addProducto($producto);
+} else {
+    
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {

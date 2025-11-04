@@ -144,6 +144,8 @@ function listarCarrito(){
     return $carrito;
 }
 
+function addCarrito()
+
 function comprobar_producto(string $nombre):bool{
     $sql = 'SELECT COUNT(*) AS num_p FROM PRODUCTOS WHERE nombre=?';
     $conexion = conexion_bd();
