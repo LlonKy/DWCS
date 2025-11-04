@@ -77,7 +77,7 @@ function getRoles(){
 
         foreach ($stmt as $resultado) {
             $r = new Rol;
-            $r->rolId = $resultado["rolID"];
+            $r->rolId = $resultado["rolId"];
             $r->nombre = $resultado["nombre"];
             $roles[] = $r;
         }

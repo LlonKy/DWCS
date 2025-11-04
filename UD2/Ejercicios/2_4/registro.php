@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="nombre">Nombre</label><br>
             <input type="text" name="nombre" required><br>
             <?php
-            echo "<select name='rolId' id='rolID'>Rol";
+            echo "<select name='rolId' id='rolId'>Rol";
             foreach ($roles as $r) {
             echo "<option value=$r->rolId>$r->nombre</option>";
         }
