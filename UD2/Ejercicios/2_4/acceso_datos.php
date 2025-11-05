@@ -69,6 +69,59 @@ function alta_usuario(
     return $toret;
 }
 
+function comprobar_usuario(string $correo, string $pass):bool{
+    $sql = 'SELECT COUNT(*) AS num_usr FROM usuario WHERE correo=? AND pwd=?';
+    $conexion = conexion_bd();
+    $query = $conexion->prepare($sql);
+    $query->bindParam(1, $correo, PDO::PARAM_STR);
+    $query->bindValue(2,sha1($pass) , PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch();
+    $toret = isset($result['num_usr']) && $result['num_usr']==1;
+    //Cerramos la conexion
+    $query = null;
+    $conexion = null;
+    return $toret;
+
+}
+
+function getUserRol($correo){
+    $sql = "SELECT rolId FROM usuario where correo = ?";
+    $db = conexion_bd();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1,$correo);
+    $stmt->execute();
+    $resultado = $stmt->fetch();
+    $userRol = null;
+    
+    if ($resultado) {
+        $userRol = $resultado["rolId"];
+    }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $userRol;
+}
+function getRol($rolId){
+    $sql = "SELECT * FROM rol where rolId = ?";
+    $db = conexion_bd();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1,$rolId);
+    $stmt->execute();
+    $resultado = $stmt->fetch();
+    
+    if ($resultado) {
+        $rol = new Rol();
+        $rol->rolId = $resultado["rolId"];
+        $rol->nombre = $resultado["nombre"];
+    }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $rol;
+}
 function getRoles(){
     $sql = "SELECT * FROM rol";
     $db = conexion_bd();

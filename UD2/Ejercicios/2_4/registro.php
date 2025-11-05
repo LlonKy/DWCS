@@ -6,8 +6,8 @@ $nombre = $_POST["nombre"] ?? null;
 $rolId = $_POST["rolId"] ?? null;
 $pwd = $_POST["pass"] ?? null;
 $pwd2 = $_POST["pass2"] ?? null;
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    echo (alta_usuario($correo,$nombre,$rolId,$pwd,$pwd2));
+if (isset($roles) && isset($correo) && isset($nombre) && isset($rolId) && isset($pwd) && isset($pwd2) && !comprobar_usuario($correo,$pwd)) {
+    alta_usuario($correo,$nombre,$rolId,$pwd,$pwd2);
 }
 
 
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             foreach ($roles as $r) {
             echo "<option value=$r->rolId>$r->nombre</option>";
         }
-        echo "</select>"
+            echo "</select><br>"
            ?>
             <label for="pass">Contraseña</label><br>
             <input type="password" name="pass" required><br>
