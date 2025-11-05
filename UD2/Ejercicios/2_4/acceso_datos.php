@@ -85,6 +85,29 @@ function comprobar_usuario(string $correo, string $pass):bool{
 
 }
 
+function getUser($correo){
+    $sql = "SELECT * FROM usuario where correo = ?";
+    $db = conexion_bd();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1,$correo);
+    $stmt->execute();
+    $resultado = $stmt->fetch();
+    
+    if ($resultado) {
+        $user = new Usuario();
+        $user->idUser = $resultado["idUser"];
+        $user->rolId = $resultado["rolId"];
+        $user->nombre = $resultado["nombre"];
+        $user->correo = $resultado["correo"];
+        $user->pwd = $resultado["pwd"];
+    }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $user;
+}
+
 function getUserRol($correo){
     $sql = "SELECT rolId FROM usuario where correo = ?";
     $db = conexion_bd();
