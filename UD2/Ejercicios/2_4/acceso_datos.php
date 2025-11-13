@@ -72,7 +72,7 @@ function comprobar_usuario(string $correo, string $pass):bool{
     $sql = 'SELECT COUNT(*) AS proyectos FROM usuario WHERE correo=? AND pwd=?';
     $conexion = conexion_bd();
     $query = $conexion->prepare($sql);
-    $query->bindParam(1, $correo, PDO::PARAM_STR);
+    $query->bindValue(1, $correo, PDO::PARAM_STR);
     $query->bindValue(2,sha1($pass) , PDO::PARAM_STR);
     $query->execute();
     $result = $query->fetch();
