@@ -107,6 +107,29 @@ function getUser($correo){
     return $user;
 }
 
+function getUserbyID($id){
+    $sql = "SELECT * FROM usuario where idUser = ?";
+    $db = conexion_bd();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(1,$id);
+    $stmt->execute();
+    $resultado = $stmt->fetch();
+    
+    if ($resultado) {
+        $user = new Usuario();
+        $user->idUser = $resultado["idUser"];
+        $user->rolId = $resultado["rolId"];
+        $user->nombre = $resultado["nombre"];
+        $user->correo = $resultado["correo"];
+        $user->pwd = $resultado["pwd"];
+    }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $user;
+}
+
 function getUserRol($correo){
     $sql = "SELECT rolId FROM usuario where correo = ?";
     $db = conexion_bd();
@@ -191,7 +214,7 @@ function addProyect($nombre,$responsableId,$descripcion){
     $sql = 'SELECT COUNT(*) AS proyectos FROM proyecto WHERE nombre=?';
     $conexion = conexion_bd();
     $query = $conexion->prepare($sql);
-    $query->bindParam(1, $nombre, PDO::PARAM_STR);
+    $query->bindValue(1, $nombre, PDO::PARAM_STR);
     $query->execute();
     $result = $query->fetch();
     
@@ -204,13 +227,13 @@ function addProyect($nombre,$responsableId,$descripcion){
     //Preparamos la consulta para insertar el nuevo usuario
     $sql = 'INSERT INTO proyecto(responsableId,nombre,descripcion) VALUES (:responsableId, :nombre, :descripcion)';
     $query = $conexion->prepare($sql);
-    $query->bindParam(':responsableId', $responsableId);
-    $query->bindParam(':nombre', $nombre);
-    $query->bindParam(':descripcion', $descripcion);
+    $query->bindValue(':responsableId', $responsableId);
+    $query->bindValue(':nombre', $nombre);
+    $query->bindValue(':descripcion', $descripcion);
     $toret = false;
     try {
         $toret = $query->execute() ;
-        $query->debugDumpParams();
+        // $query->debugDumpParams();
     } catch (PDOException $e) {
         error_log($e->getMessage());
         $toret = false;
@@ -221,4 +244,47 @@ function addProyect($nombre,$responsableId,$descripcion){
     }
 
     return $toret;
+}
+
+function getProyect($id){
+    $sql = "SELECT * FROM proyecto where idProyecto = ?";
+    $db = conexion_bd();
+    $stmt = $db->prepare($sql);
+    $stmt->bindValue(1,$id);
+    $stmt->execute();
+    $resultado = $stmt->fetch();
+    
+    if ($resultado) {
+        $p = new Proyecto();
+        $p->idProyecto = $resultado["idProyecto"];
+        $p->responsableId = $resultado["responsableId"];
+        $p->nombre = $resultado["nombre"];
+        $p->descripcion = $resultado["descripcion"];
+    }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $p;
+}
+
+function getProyects(){
+    $sql = "SELECT * FROM proyecto";
+    $db = conexion_bd();
+    $stmt = $db->query($sql);
+    $proyectos = [];
+
+        foreach ($stmt as $resultado) {
+            $p = new Proyecto();
+            $p->idProyecto = $resultado["idProyecto"];
+            $p->responsableId = $resultado["responsableId"];
+            $p->nombre = $resultado["nombre"];
+            $p->descripcion = $resultado["descripcion"];
+            $proyectos[] = $p;
+        }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $proyectos;
 }
