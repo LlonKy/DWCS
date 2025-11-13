@@ -17,7 +17,7 @@ CREATE TABLE usuario (
 
 CREATE TABLE proyecto (
     idProyecto INT PRIMARY KEY AUTO_INCREMENT,
-    responsableId INT,
+    responsableId INT not null,
     nombre VARCHAR(40),
     descripcion VARCHAR(300),
     FOREIGN KEY (responsableId) REFERENCES usuario(idUser)

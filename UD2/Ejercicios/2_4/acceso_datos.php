@@ -24,21 +24,20 @@ function alta_usuario(
     string $correo,
     string $nombre,
     string $rolId,
-    string $pass,
-    string $pass2
+    string $pass
 ): bool|string {
 
    
 
     //Comprobamos que no exista un usuario con ese nic o correo.
-    $sql = 'SELECT COUNT(*) AS num_usr FROM usuario WHERE correo=?';
+    $sql = 'SELECT COUNT(*) AS proyectos FROM usuario WHERE correo=?';
     $conexion = conexion_bd();
     $query = $conexion->prepare($sql);
     $query->bindParam(1, $correo, PDO::PARAM_STR);
     $query->execute();
     $result = $query->fetch();
     
-    if (isset($result['num_usr']) && $result['num_usr'] > 0) {
+    if (isset($result['proyectos']) && $result['proyectos'] > 0) {
         return 'El nombre de usuario y/o el correo ya existen.';
     }
     //Cerramos el cursor.
@@ -70,14 +69,14 @@ function alta_usuario(
 }
 
 function comprobar_usuario(string $correo, string $pass):bool{
-    $sql = 'SELECT COUNT(*) AS num_usr FROM usuario WHERE correo=? AND pwd=?';
+    $sql = 'SELECT COUNT(*) AS proyectos FROM usuario WHERE correo=? AND pwd=?';
     $conexion = conexion_bd();
     $query = $conexion->prepare($sql);
     $query->bindParam(1, $correo, PDO::PARAM_STR);
     $query->bindValue(2,sha1($pass) , PDO::PARAM_STR);
     $query->execute();
     $result = $query->fetch();
-    $toret = isset($result['num_usr']) && $result['num_usr']==1;
+    $toret = isset($result['proyectos']) && $result['proyectos']==1;
     //Cerramos la conexion
     $query = null;
     $conexion = null;
@@ -162,4 +161,64 @@ function getRoles(){
     $db = null;
 
     return $roles;
+}
+
+function getResponsables(){
+    $sql = "SELECT * FROM usuario WHERE rolId = 3";
+    $db = conexion_bd();
+    $stmt = $db->query($sql);
+    $responsables = [];
+
+        foreach ($stmt as $resultado) {
+            $user = new Usuario();
+            $user->idUser = $resultado["idUser"];
+            $user->rolId = $resultado["rolId"];
+            $user->nombre = $resultado["nombre"];
+            $user->correo = $resultado["correo"];
+            $user->pwd = $resultado["pwd"];
+            $responsables[] = $user;
+        }
+
+    $stmt->closeCursor();
+    $db = null;
+
+    return $responsables;
+}
+
+
+function addProyect($nombre,$responsableId,$descripcion){
+    //Comprobamos que no exista un usuario con ese nic o correo.
+    $sql = 'SELECT COUNT(*) AS proyectos FROM proyecto WHERE nombre=?';
+    $conexion = conexion_bd();
+    $query = $conexion->prepare($sql);
+    $query->bindParam(1, $nombre, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch();
+    
+    if (isset($result['proyectos']) && $result['proyectos'] > 0) {
+        return 'El proyecto ya existe';
+    }
+    //Cerramos el cursor.
+    $query->closeCursor();
+
+    //Preparamos la consulta para insertar el nuevo usuario
+    $sql = 'INSERT INTO proyecto(responsableId,nombre,descripcion) VALUES (:responsableId, :nombre, :descripcion)';
+    $query = $conexion->prepare($sql);
+    $query->bindParam(':responsableId', $responsableId);
+    $query->bindParam(':nombre', $nombre);
+    $query->bindParam(':descripcion', $descripcion);
+    $toret = false;
+    try {
+        $toret = $query->execute() ;
+        $query->debugDumpParams();
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        $toret = false;
+    } finally {
+        //Cerramos la conexion
+        $query = null;
+        $conexion = null;
+    }
+
+    return $toret;
 }

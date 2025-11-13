@@ -6,24 +6,26 @@ $correo = $_POST["mail"] ?? null;
 $pass = $_POST["pass"] ?? null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && comprobar_usuario($correo,$pass)) {
+    $user = getUser($correo);
     $userRol = getRol(getUserRol($correo));
     $_SESSION["rol"] = $userRol->rolId;
+    $_SESSION["usuario"] = $user;
 
-    if (isset($_SESSION["rol"])) {
-        switch ($_SESSION["rol"]) {
-            case '1':
-                header("Location: paginajefe.php");
-                break;
-             case '2':
-                header("Location: paginaprogramador.php");
-                break;
-             case '3':
-                header("Location: paginaresponsable.php");
-                break;
-            
-            default:
-                break;
-        }
+}
+if (isset($_SESSION["rol"])) {
+    switch ($_SESSION["rol"]) {
+        case '1':
+            header("Location: newProyect.php");
+            break;
+         case '2':
+            header("Location: paginaprogramador.php");
+            break;
+         case '3':
+            header("Location: paginaresponsable.php");
+            break;
+        
+        default:
+            break;
     }
 }
 
