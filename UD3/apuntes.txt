@@ -1,0 +1,9 @@
+fetch es para cuando solo quieres recuperar 1 fila (por clave primary)
+
+$stmt = $db->query con un foreach es para recuperar varias filas e ir recorriendo 1 a 1
+
+exec()-> para sentencias de actualizacion insercion delete (Aqui está ejecutada del tirón)
+
+query()-> para consultas de datos (Aqui está ejecutada del tirón)
+
+prepare()-> para cuando nos vienen datos del usuario (Inyecciones SQL) (Aqui está preparada, con el metodo execute() se cambia el estado a ejecutada) (EL METODO execute() solo para prepare!!!)
