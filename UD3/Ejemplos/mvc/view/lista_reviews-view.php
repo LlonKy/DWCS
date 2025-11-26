@@ -16,6 +16,7 @@
         </tr>
         <?php
         // Recorremos fila a fila el resultado de la consulta
+        echo "<table>";
         foreach ($data as $row) {
             echo "<tr>";
             echo "<td> " . $row['descripcion'] . " </td>";
@@ -23,6 +24,7 @@
             echo "</tr>";
         }
         echo "</table>";
+
 
         ?>
     </table>
