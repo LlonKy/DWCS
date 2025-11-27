@@ -2,38 +2,40 @@
 namespace Ejercicios\EJ1\mvc\model;
 use Ejercicios\EJ1\mvc\model\Model;
 use Ejercicios\EJ1\mvc\model\vo\Escuela;
+use Ejercicios\EJ1\mvc\model\vo\Municipio;
+use Pdo;
 
 class EscuelaModel extends Model{
     
-    public static function getEscuelas($cod_municipio = null, $nombre = null){
-        $sql = "SELECT * FROM escuela WHERE 1";
+    public static function getEscuelas($nombreMunicipio = null, $nombre = null){
+        $sql = "SELECT e.nombre,e.direccion,m.nombre as nombreMunicipio,e.hora_apertura,e.hora_cierre,e.comedor FROM escuela e inner join municipio m WHERE e.cod_municipio = m.cod_municipio AND 1";
         $db = parent::getConnection();
-        $params = [];
         $escuelas = [];
 
-        if (isset($cod_municipio)) {
-            $sql .= "AND cod_municipio = :cod_municipio";
-            $params[':cod_municipio'] = $cod_municipio;
+        if (isset($nombreMunicipio)) {
+            $sql .= "AND m.nombre LIKE :nombreMunicipio";
         }
         if (isset($nombre)) {
             $sql .= "AND nombre LIKE ':nombre'";
-            $params[':nombre'] = "%".$nombre."%";
         }
 
         $stmt = $db->prepare($sql);
 
-        foreach ($params as $key => $value) {
-            $stmt->bindValue($key,$value);
+        if (isset($nombreMunicipio)) {
+            $stmt->bindValue(":nombreMunicipio","%".$nombreMunicipio."%",PDO::PARAM_INT);
         }
+        if (isset($nombre)) {
+            $stmt->bindValue(":nombre","%".$nombre."%",PDO::PARAM_STR);
+        }
+
 
         $stmt->execute();
 
         foreach ($stmt as $e) {
             $escuela = new Escuela;
-            $escuela->cod_escuela = $e['cod_escuela'];
             $escuela->nombre = $e['nombre'];
             $escuela->direccion = $e['direccion'];
-            $escuela->cod_municipio = $e['cod_municipio'];
+            $escuela->cod_municipio = $e['nombreMunicipio'];
             $escuela->hora_apertura = $e['hora_apertura'];
             $escuela->hora_cierre = $e['hora_cierre'];
             $escuela->comedor = $e['comedor'];

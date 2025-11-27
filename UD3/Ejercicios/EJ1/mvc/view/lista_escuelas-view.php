@@ -7,20 +7,35 @@
 </head>
 <body>
     <h1>Listado de Escuelas de Galicia</h1>
+    <form action="?controller=EscuelaController&action=listarEscuelas" method="POST">
+        <select name="filtroMunicipios" id="filtroMunicipios">
+            <?php
+            $municipios = $data['municipios'];
+            foreach ($municipios as $m) {
+                echo "<option value='$m->nombre'>$m->nombre</option>";
+            }
+    
+            ?>
+        </select>
+        <label for="nombre">Filtrar por nombre</label>
+        <input type="text" name="nombre" id="nombre">
+        <label for="enviar">Filtrar</label>
+        <input type="submit" id="enviar" value="Enviar">
+
+    </form>
     <table>
         <tr>
-            <th>Cod Escuela</th>
             <th>Nombre</th>
             <th>Direccion</th>
-            <th>Cod Municipio</th>
+            <th>Municipio</th>
             <th>Hora Apertura</th>
             <th>Hora Cierre</th>
             <th>Comedor</th>
         </tr>
         <?php
-            foreach ($data as $row) {
+            $escuelas = $data['escuelas'];
+            foreach ($escuelas as $row) {
             echo "<tr>";
-            echo "<td> " . $row->cod_escuela . " </td>";
             echo "<td> " . $row->nombre . " </td>";
             echo "<td> " . $row->direccion . " </td>";
             echo "<td> " . $row->cod_municipio . " </td>";
