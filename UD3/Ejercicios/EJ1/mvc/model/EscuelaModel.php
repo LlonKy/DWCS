@@ -8,24 +8,24 @@ use Pdo;
 class EscuelaModel extends Model{
     
     public static function getEscuelas($nombreMunicipio = null, $nombre = null){
-        $sql = "SELECT e.nombre,e.direccion,m.nombre as nombreMunicipio,e.hora_apertura,e.hora_cierre,e.comedor FROM escuela e inner join municipio m WHERE e.cod_municipio = m.cod_municipio AND 1";
+        $sql = "SELECT e.nombre,e.direccion,m.nombre as nombreMunicipio,e.hora_apertura,e.hora_cierre,e.comedor FROM escuela e inner join municipio m on e.cod_municipio = m.cod_municipio WHERE 1";
         $db = parent::getConnection();
         $escuelas = [];
 
         if (isset($nombreMunicipio)) {
-            $sql .= "AND m.nombre LIKE :nombreMunicipio";
+            $sql .= " AND m.nombre LIKE :nombreMunicipio";
         }
         if (isset($nombre)) {
-            $sql .= "AND nombre LIKE ':nombre'";
+            $sql .= " AND e.nombre LIKE :nombre";
         }
 
         $stmt = $db->prepare($sql);
 
         if (isset($nombreMunicipio)) {
-            $stmt->bindValue(":nombreMunicipio","%".$nombreMunicipio."%",PDO::PARAM_INT);
+            $stmt->bindValue(":nombreMunicipio","%".$nombreMunicipio."%",PDO::PARAM_STR);
         }
         if (isset($nombre)) {
-            $stmt->bindValue(":nombre","%".$nombre."%",PDO::PARAM_STR);
+            $stmt->bindValue(":nombre","%$nombre%",PDO::PARAM_STR);
         }
 
 

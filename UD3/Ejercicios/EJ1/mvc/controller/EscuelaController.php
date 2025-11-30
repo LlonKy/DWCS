@@ -7,14 +7,18 @@ class EscuelaController extends Controller{
     public function listarEscuelas(){ 
         $escuelas = EscuelaModel::getEscuelas();
         $municipios = MunicipioModel::getMunicipios();
+        $filtroMunicipio = $_POST["filtroMunicipios"] ?? null;
+        $filtroNombre = $_POST["nombre"] ?? null;
 
-        if (isset($_POST["nombre"])) {
-            $escuelas = EscuelaModel::getEscuelas(null,$_POST["nombre"]);
-        }
+        if ($filtroMunicipio === "") $filtroMunicipio = null;
+        if ($filtroNombre === "") $filtroNombre = null;
+
+        $escuelas = EscuelaModel::getEscuelas($filtroMunicipio,$filtroNombre);
+
         if (isset($escuelas)) {
             $this->vista->showView("lista_escuelas",['escuelas'=>$escuelas, 'municipios'=>$municipios]);
         } else {
-            $this->vista->showView("error_lista");
+            $this->vista->showView("page_not_found");
         }
 
     }

@@ -9,6 +9,7 @@
     <h1>Listado de Escuelas de Galicia</h1>
     <form action="?controller=EscuelaController&action=listarEscuelas" method="POST">
         <select name="filtroMunicipios" id="filtroMunicipios">
+            <option value="">-</option>
             <?php
             $municipios = $data['municipios'];
             foreach ($municipios as $m) {
