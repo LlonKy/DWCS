@@ -10,6 +10,8 @@ class Escuela {
 
     public $cod_municipio;
 
+    public $nombre_municipio;
+
     public $hora_apertura;
 
     public $hora_cierre;

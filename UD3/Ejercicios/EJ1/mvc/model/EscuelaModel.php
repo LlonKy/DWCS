@@ -35,7 +35,7 @@ class EscuelaModel extends Model{
             $escuela = new Escuela;
             $escuela->nombre = $e['nombre'];
             $escuela->direccion = $e['direccion'];
-            $escuela->cod_municipio = $e['nombreMunicipio'];
+            $escuela->nombre_municipio = $e['nombreMunicipio'];
             $escuela->hora_apertura = $e['hora_apertura'];
             $escuela->hora_cierre = $e['hora_cierre'];
             $escuela->comedor = $e['comedor'];
@@ -47,6 +47,10 @@ class EscuelaModel extends Model{
         $db = null;
 
         return $escuelas;
+
+    }
+
+    public static function addEscuela(string $nombre,string $direccion,string $hora_apertura,string $hora_cierre,string $comedor  ){
 
     }
 }

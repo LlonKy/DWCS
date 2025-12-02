@@ -6,6 +6,7 @@ class MunicipioModel extends Model{
 
     public static function getMunicipios(){
         $sql = "SELECT nombre from municipio";
+        $sql .= " ORDER BY nombre";
         $db = parent::getConnection();
         $municipios = [];
 

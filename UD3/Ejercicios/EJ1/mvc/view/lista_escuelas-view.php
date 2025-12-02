@@ -23,6 +23,8 @@
         <label for="enviar">Filtrar</label>
         <input type="submit" id="enviar" value="Enviar">
 
+        <?= "<a href='?controller=EscuelaController&action=altaEscuela'>Añadir Escuela</a> "?>
+
     </form>
     <table>
         <tr>
