@@ -23,22 +23,36 @@ class EscuelaController extends Controller{
 
     public function altaEscuela(){
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            $this->vista->showView("alta_escuela");
+            $municipios = MunicipioModel::getMunicipios();
+            $this->vista->showView("alta_escuela",$municipios);
         }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $cod_escuela = $_POST["cod_escuela"] ?? null;
             $nombre = $_POST["nombre"] ?? null;
             $direccion = $_POST["direccion"] ?? null;
             $hora_apertura = $_POST["hora_apertura"] ?? null;
             $hora_cierre = $_POST["hora_cierre"] ?? null;
             $comedor = $_POST["comedor"] ?? null;
-
-            if (isset($cod_escuela) && isset($nombre) && isset($direccion) && isset($hora_apertura) && isset($hora_cierre) && isset($comedor)) {
-                EscuelaModel::addEscuela($cod_escuela,$nombre,$direccion,$hora_apertura,$hora_cierre,$comedor);
-                $this->vista->showView("confirm-add");
+            $cod_municipio = $_POST["municipio"] ?? null;
+            
+            if (isset($nombre) && isset($direccion) && isset($hora_apertura) && isset($hora_cierre) && isset($comedor)) {
+                EscuelaModel::addEscuela($nombre,$direccion,$hora_apertura,$hora_cierre,$comedor,$cod_municipio);
+                $this->vista->showView("confirm");
             } else {
-                $this->vista->showView("error-add");
+                $this->vista->showView("error");
+            }
+        }
+    }
+
+    public function deleteEscuela(){
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $escuela = $_GET['cod_escuela'];
+            $confirmDelete = EscuelaModel::deleteEscuela($escuela);
+
+            if ($confirmDelete) {
+                $this->vista->showView("confirm");
+            } else {
+                $this->vista->showView("error");
             }
         }
     }

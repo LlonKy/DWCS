@@ -31,6 +31,17 @@
     </select>
     <br>
 
+    <label for="municipio">Municipio</label>
+    <select id="municipio" name="municipio" required>
+    <?php
+        $municipios = $data;
+        foreach ($municipios as $m) {
+            echo "<option value='$m->cod_municipio'>$m->nombre</option>";
+        }
+    
+    ?>
+    </select>
+    <br>
     <input type="submit" value="Enviar">
 </form>
 </body>

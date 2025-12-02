@@ -6,7 +6,7 @@
     <title>ERROR</title>
 </head>
 <body>
-    <h1>Error al añadir la escuela, porfavor vuelve a intentarlo</h1>
+    <h1>Error al añadir realizar la operación, porfavor vuelva a intentarlo</h1>
     <?= "<a href='?controller=EscuelaController&action=listaEscuelas'>Volver</a> "?>
 </body>
 </html>

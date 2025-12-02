@@ -34,6 +34,7 @@
             <th>Hora Apertura</th>
             <th>Hora Cierre</th>
             <th>Comedor</th>
+            <th>Acciones</th>
         </tr>
         <?php
             $escuelas = $data['escuelas'];
@@ -41,10 +42,11 @@
             echo "<tr>";
             echo "<td> " . $row->nombre . " </td>";
             echo "<td> " . $row->direccion . " </td>";
-            echo "<td> " . $row->cod_municipio . " </td>";
+            echo "<td> " . $row->nombre_municipio . " </td>";
             echo "<td> " . $row->hora_apertura . " </td>";
             echo "<td> " . $row->hora_cierre . " </td>";
             echo "<td> " . $row->comedor . " </td>";
+            echo "<td> <a href='?controller=EscuelaController&action=deleteEscuela&cod_escuela=$row->cod_escuela'>Eliminar Escuela</a> </td>";
 
             echo "</tr>";
             }

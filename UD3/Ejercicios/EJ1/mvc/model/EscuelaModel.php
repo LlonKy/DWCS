@@ -8,7 +8,7 @@ use Pdo;
 class EscuelaModel extends Model{
     
     public static function getEscuelas($nombreMunicipio = null, $nombre = null){
-        $sql = "SELECT e.nombre,e.direccion,m.nombre as nombreMunicipio,e.hora_apertura,e.hora_cierre,e.comedor FROM escuela e inner join municipio m on e.cod_municipio = m.cod_municipio WHERE 1";
+        $sql = "SELECT e.cod_escuela,e.nombre,e.direccion,m.nombre as nombreMunicipio,e.hora_apertura,e.hora_cierre,e.comedor FROM escuela e inner join municipio m on e.cod_municipio = m.cod_municipio WHERE 1";
         $db = parent::getConnection();
         $escuelas = [];
 
@@ -33,6 +33,7 @@ class EscuelaModel extends Model{
 
         foreach ($stmt as $e) {
             $escuela = new Escuela;
+            $escuela->cod_escuela = $e['cod_escuela'];
             $escuela->nombre = $e['nombre'];
             $escuela->direccion = $e['direccion'];
             $escuela->nombre_municipio = $e['nombreMunicipio'];
@@ -50,7 +51,50 @@ class EscuelaModel extends Model{
 
     }
 
-    public static function addEscuela(string $nombre,string $direccion,string $hora_apertura,string $hora_cierre,string $comedor  ){
+    public static function addEscuela(string $nombre,string $direccion,string $hora_apertura,string $hora_cierre,string $comedor, int $cod_municipio){
+        $sql = "INSERT INTO escuela (nombre, direccion, cod_municipio, hora_apertura, hora_cierre, comedor)
+            VALUES (:nombre, :direccion, :cod_municipio, :hora_apertura, :hora_cierre, :comedor)";
+        $db = parent::getConnection();
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(":nombre",$nombre);
+        $stmt->bindValue(":direccion",$direccion);
+        $stmt->bindValue(":cod_municipio",$cod_municipio);
+        $stmt->bindValue(":hora_apertura",$hora_apertura);
+        $stmt->bindValue(":hora_cierre",$hora_cierre);
+        $stmt->bindValue(":comedor",$comedor);
 
+        try {
+            $stmt->execute();
+            $toret = true;
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+            $toret = false;
+        }
+        $db = null;
+
+        return $toret;
+    }
+
+    public static function deleteEscuela($cod_escuela){
+        $sql = "DELETE FROM escuela WHERE cod_escuela = :cod_escuela";
+        $db = parent::getConnection();
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(":cod_escuela",$cod_escuela);
+
+        try {
+            $stmt->execute();
+            $toret = true;
+            if ($stmt->rowCount()!= 1) {
+                $toret = false;
+            }
+        } catch (\Throwable $th) {
+            echo $th->getMessage();
+            $toret = false;
+        }
+
+        $db = null;
+
+        return $toret;
     }
 }

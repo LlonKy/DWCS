@@ -5,7 +5,7 @@ use Ejercicios\EJ1\mvc\model\vo\Municipio;
 class MunicipioModel extends Model{
 
     public static function getMunicipios(){
-        $sql = "SELECT nombre from municipio";
+        $sql = "SELECT cod_municipio, nombre from municipio";
         $sql .= " ORDER BY nombre";
         $db = parent::getConnection();
         $municipios = [];
@@ -14,6 +14,7 @@ class MunicipioModel extends Model{
 
         foreach ($stmt as $m) {
             $municipio = new Municipio();
+            $municipio->cod_municipio = $m['cod_municipio'];
             $municipio->nombre = $m['nombre'];
             $municipios[] = $municipio;
         }
