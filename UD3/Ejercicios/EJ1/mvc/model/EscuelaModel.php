@@ -4,6 +4,7 @@ use Ejercicios\EJ1\mvc\model\Model;
 use Ejercicios\EJ1\mvc\model\vo\Escuela;
 use Ejercicios\EJ1\mvc\model\vo\Municipio;
 use Pdo;
+use PDOException;
 
 class EscuelaModel extends Model{
     
@@ -51,14 +52,14 @@ class EscuelaModel extends Model{
 
     }
 
-    public static function addEscuela(string $nombre,string $direccion,string $hora_apertura,string $hora_cierre,string $comedor, int $cod_municipio){
+    public static function addEscuela(string $nombre,string $direccion,string $hora_apertura,string $hora_cierre,string $comedor,  $cod_municipio){
         $sql = "INSERT INTO escuela (nombre, direccion, cod_municipio, hora_apertura, hora_cierre, comedor)
             VALUES (:nombre, :direccion, :cod_municipio, :hora_apertura, :hora_cierre, :comedor)";
         $db = parent::getConnection();
         $stmt = $db->prepare($sql);
         $stmt->bindValue(":nombre",$nombre);
         $stmt->bindValue(":direccion",$direccion);
-        $stmt->bindValue(":cod_municipio",$cod_municipio);
+        $stmt->bindValue(":cod_municipio",intval($cod_municipio));
         $stmt->bindValue(":hora_apertura",$hora_apertura);
         $stmt->bindValue(":hora_cierre",$hora_cierre);
         $stmt->bindValue(":comedor",$comedor);
@@ -96,5 +97,70 @@ class EscuelaModel extends Model{
         $db = null;
 
         return $toret;
+    }
+
+        public static function getFilter(?array $data): array
+    {
+        $sql = "SELECT * FROM escuela WHERE 1=1";
+        $resultados = [];
+
+        try {
+            $db = self::getConnection();
+            if (isset($data)) {
+                if (isset($data['nombre'])) {
+                    $sql .= " AND nombre LIKE :nombre";
+                }
+
+                if (isset($data['cod_municipio'])) {
+                    $sql .= " AND cod_municipio = :cod_municipio";
+                }
+
+                if (isset($data['comedor'])) {
+                    $sql .= " AND comedor = :comedor";
+                }
+            }
+
+            $stmt = $db->prepare($sql);
+            if (isset($data)) {
+                if (isset($data['nombre'])) {
+                    $stmt->bindValue(':nombre', "%" . $data['nombre'] . "%", PDO::PARAM_STR);
+                }
+
+                if (isset($data['cod_municipio'])) {
+                    $stmt->bindValue(':cod_municipio', (int) $data['cod_municipio'], PDO::PARAM_INT);
+                }
+
+                if (isset($data['comedor'])) {
+                    $stmt->bindValue(':comedor', $data['comedor'] ? 'S' : 'N', PDO::PARAM_STR);
+                }
+            }
+
+            $stmt->execute();
+
+            foreach ($stmt as $row) {
+                $resultados[] = self::rowToVO($row);
+            }
+
+            $stmt->closeCursor();
+        } catch (PDOException $th) {
+            error_log("Error accediendo a la base de datos. " . $th->getMessage());
+        } finally {
+            $db = null;
+        }
+
+        return $resultados;
+    }
+
+    private static function rowToVO(array $row): Escuela
+    {
+        return new Escuela(
+            (int) $row['cod_escuela'],
+            $row['nombre'],
+            $row['direccion'],
+            (int) $row['cod_municipio'],
+            $row['hora_apertura'],
+            $row['hora_cierre'],
+            $row['comedor'] === 'S' ? true : false
+        );
     }
 }

@@ -2,23 +2,27 @@
 namespace Ejercicios\EJ1\mvc\controller;
 use Ejercicios\EJ1\mvc\model\EscuelaModel;
 use Ejercicios\EJ1\mvc\model\MunicipioModel;
+use Ejercicios\EJ1\mvc\model\ProvinciaModel;
 use Ejercicios\EJ1\mvc\model\vo\Escuela;
 class EscuelaController extends Controller{
-    public function listarEscuelas(){ 
-        $municipios = MunicipioModel::getMunicipios();
-        $filtroMunicipio = $_POST["filtroMunicipios"] ?? null;
-        $filtroNombre = $_POST["nombre"] ?? null;
+  public function listaEscuelas()
+    {
+        $filterMunicipio = $_REQUEST['cod_municipio'] ?? '';
+        $filterNombre = $_REQUEST['nombre'] ?? '';
+        $filterProvincia = $_REQUEST['cod_provincia'] ?? '';
+        $filters = ['nombre' => $filterNombre];
+        if (!empty($filterMunicipio)) {
+            $filters['cod_municipio'] = intval($filterMunicipio);
 
-        if ($filtroMunicipio === "") $filtroMunicipio = null;
-        if ($filtroNombre === "") $filtroNombre = null;
-
-        $escuelas = EscuelaModel::getEscuelas($filtroMunicipio,$filtroNombre);
-
-        if (isset($escuelas)) {
-            $this->vista->showView("lista_escuelas",['escuelas'=>$escuelas, 'municipios'=>$municipios]);
-        } else {
-            $this->vista->showView("page_not_found");
         }
+
+        $provincias = ProvinciaModel::getFilter();
+        $municipios = MunicipioModel::getFilter(!empty($filterProvincia)?['cod_provincia'=>intval($filterProvincia)]:null);
+        $escuelas = EscuelaModel::getFilter($filters);
+
+        $this->vista->showView("lista_escuelas",['municipios'=>$municipios, 
+                                                                'escuelas'=>$escuelas,
+                                                                'provincias'=>$provincias]);
     }
 
     public function altaEscuela(){

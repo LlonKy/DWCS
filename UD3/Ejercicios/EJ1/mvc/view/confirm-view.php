@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Operación Realizada con éxito</h1>
-    <?= "<a href='?controller=EscuelaController&action=listarEscuelas'>Volver al Listado</a> "?>
+    <?= "<a href='?controller=EscuelaController&action=listaEscuelas'>Volver al Listado</a> "?>
 
 </body>
 </html>

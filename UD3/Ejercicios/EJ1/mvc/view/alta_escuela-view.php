@@ -36,7 +36,7 @@
     <?php
         $municipios = $data;
         foreach ($municipios as $m) {
-            echo "<option value='$m->cod_municipio'>$m->nombre</option>";
+            echo "<option value='$m->codMunicipio'>$m->nombre</option>";
         }
     
     ?>
