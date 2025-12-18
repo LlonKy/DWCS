@@ -8,9 +8,9 @@
 <body>
     <h1>Menú aplicación</h1>
 
-    <a href="">Lista Productos</a><br>
-    <a href="">Lista Clientes</a><br>
-    <a href="">Alta Producto</a><br>
-    <a href="">Alta Cliente</a>
+    <a href="?controller=ProductController&action=listProducts">Lista Productos</a><br>
+    <a href="?controller=ClientController&action=listClients">Lista Clientes</a><br>
+    <a href="?controller=ClientController&action=showForm">Alta Cliente</a><br>
+    <a href="?controller=ProductController&action=showForm">Alta Producto</a>
 </body>
 </html>
