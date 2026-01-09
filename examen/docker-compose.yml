@@ -1,9 +1,6 @@
-version: '2'
 services:
   php:
-    #image: bitnami/php-fpm:latest
-    #Cambiamos de la version 8.3 a la 8.2 para poder utilizar xdebug
-    image: bitnami/php-fpm:8.2.23
+    image: bitnami/php-fpm:latest
     ports:
       - 9000:9000
     volumes:

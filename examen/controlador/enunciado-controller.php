@@ -1,4 +1,6 @@
 <?php
+namespace controlador;
+use vista\view;
 include_once(VIEW_PATH."View.php");
 class EnunciadoController{
 
