@@ -1,8 +1,7 @@
 <?php
+namespace Ejercicios\musica\core;
+class Request {
 
-namespace Ejercicios\EJ1\mvc\core;
-
-class Request{
     public function uri():string{
         return $_SERVER["REQUEST_URI"];
     }
