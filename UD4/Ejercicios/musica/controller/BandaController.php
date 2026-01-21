@@ -23,6 +23,7 @@ class BandaController {
             return;
         }
         Response::json($banda->toArray(),200);
+        
     }
 
     public function store(){
@@ -33,11 +34,27 @@ class BandaController {
         Response::json($banda->toArray(),201);
     }
 
-    public function update(){
+    public function update(int $id){
+        $request = new Request();
+        $banda = BandaModel::getById($id);
+        if (!isset($banda)) {
+            Response::notFound();
+            return;
+        }
 
+        $banda->updateVoParams(BandaVO::fromArray($request->body()));
+        
+        $banda->setId($id);
+        $banda = BandaModel::update($banda);
+
+        Response::json($banda->toArray(), 200);
     }
 
-    public function destroy(){
-
+    public function destroy(int $id){
+        if (BandaModel::delete($id)) {
+            Response::json(['mensaje' => "Banda $id eliminada"],204);
+        } else {
+            Response::notFound();
+        }
     }
 }

@@ -1,29 +1,27 @@
 <?php
 namespace Ejercicios\musica\model;
-
 use Ejercicios\musica\model\Model;
-use Ejercicios\musica\model\vo\BandaVO;
+use Ejercicios\musica\model\vo\DiscoVO;
 use PDO;
 use PDOException;
 
-class BandaModel extends Model{
+class DiscoModel extends Model{
     public static function get(){
-        $sql = "SELECT * from banda";
+        $sql = "SELECT * from disco";
         $db = self::getConnection();
-        $bandas = [];
+        $discos = [];
 
         try {
             $stmt = $db->query($sql);
             foreach ($stmt as $b) {
-                $banda = new BandaVO(
+                $disco = new DiscoVO(
                     $b["id"],
-                    $b["nombre"],
-                    $b["num_integrantes"],
-                    $b["genero"],
-                    $b["nacionalidad"]
+                    $b["titulo"],
+                    $b["anho"],
+                    $b["id_banda"]
                 );
 
-                $bandas[] = $banda;
+                $discos[] = $disco;
             }
         } catch (PDOException $e) {
             echo "Error al hacer la consulta: ".$e->getMessage();
@@ -31,13 +29,13 @@ class BandaModel extends Model{
             $db = null;
         }
 
-        return $bandas;
+        return $discos;
     }
 
     public static function getById(int $id){
-         $sql = "SELECT * from banda Where id = :id";
+         $sql = "SELECT * from disco Where id = :id";
         $db = self::getConnection();
-        $banda = null;
+        $disco = null;
 
         try {
             $stmt = $db->prepare($sql);
@@ -46,12 +44,11 @@ class BandaModel extends Model{
 
             if ($stmt->rowCount()) {
                 $b = $stmt->fetch();
-                $banda = new BandaVO(
+                $disco = new DiscoVO(
                     $b["id"],
-                    $b["nombre"],
-                    $b["num_integrantes"],
-                    $b["genero"],
-                    $b["nacionalidad"]
+                    $b["titulo"],
+                    $b["anho"],
+                    $b["id_banda"]
                 );
             }
         } catch (PDOException $e) {
@@ -60,25 +57,24 @@ class BandaModel extends Model{
             $db = null;
         }
 
-        return $banda;
+        return $disco;
     }
-    public static function add(BandaVO $vo):BandaVO|false{
-        $sql = "INSERT INTO banda (nombre,num_integrantes,genero,nacionalidad)
-        VALUES (:nombre, :num_integrantes, :genero, :nacionalidad)";
+    public static function add(DiscoVO $vo):DiscoVO|false{
+        $sql = "INSERT INTO disco (titulo,anho,id_banda)
+        VALUES (:titulo, :anho, :id_banda)";
         $db = self::getConnection();
 
         try {
             $stmt = $db->prepare($sql);
-            $stmt->bindValue(":nombre", $vo->getNombre(), PDO::PARAM_STR);
-            $stmt->bindValue(":num_integrantes", $vo->getNum_integrantes(), PDO::PARAM_INT);
-            $stmt->bindValue(":genero", $vo->getGenero(), PDO::PARAM_STR);
-            $stmt->bindValue(":nacionalidad", $vo->getNacionalidad(), PDO::PARAM_STR);
+            $stmt->bindValue(":titulo", $vo->getTitulo(), PDO::PARAM_STR);
+            $stmt->bindValue(":anho", $vo->getAnho(), PDO::PARAM_INT);
+            $stmt->bindValue(":id_banda", $vo->getId_banda(), PDO::PARAM_INT);
             
             if($stmt->execute()){
                 $id = $vo->getId();
             }
         } catch (PDOException $e) {
-            error_log("Error agregando banda: ". $e->getMessage());
+            error_log("Error agregando disco: ". $e->getMessage());
         } finally{
             $db = null;
         }
@@ -86,15 +82,14 @@ class BandaModel extends Model{
         return $id ? self::getById($id) : false;
     }
 
-    public static function update(BandaVO $vo):BandaVO|false{
+    public static function update(DiscoVO $vo):DiscoVO|false{
         if ($vo->getId() === null) {
             return false;
         }
 
-        $sql = "UPDATE banda SET nombre = :nombre,
-        num_integrantes = :num_integrantes,
-        genero = :genero,
-        nacionalidad = :nacionalidad
+        $sql = "UPDATE disco SET titulo = :titulo,
+        anho = :anho,
+        id_banda = :id_banda
         Where id = :id";
         $result = false;
 
@@ -102,15 +97,14 @@ class BandaModel extends Model{
             $db = self::getConnection();
             $stmt = $db->prepare($sql);
 
-            $stmt->bindValue(":nombre", $vo->getNombre());
-            $stmt->bindValue(":num_integrantes", $vo->getNum_integrantes());
-            $stmt->bindValue(":genero", $vo->getGenero());
-            $stmt->bindValue(":nacionalidad", $vo->getNacionalidad());
+            $stmt->bindValue(":titulo", $vo->getTitulo());
+            $stmt->bindValue(":anho", $vo->getAnho());
+            $stmt->bindValue(":id_banda", $vo->getId_banda());
             $stmt->bindValue(":id", $vo->getId());
 
             $result = $stmt->execute();
         } catch (PDOException $th) {
-            error_log("Error actualizando banda: ".$th->getMessage());
+            error_log("Error actualizando disco: ".$th->getMessage());
         } finally{
             $db = null;
         }
@@ -119,7 +113,7 @@ class BandaModel extends Model{
     }
 
     public static function delete(int $id):bool{
-        $sql = "DELETE from banda where id = :id";
+        $sql = "DELETE from disco where id = :id";
         $result = false;
         $db = self::getConnection();
 
@@ -130,7 +124,7 @@ class BandaModel extends Model{
                 $result = $stmt->rowCount() === 1;
             }
         } catch (PDOException $th) {
-            error_log("Error eliminando la banda con id: $id ". $th->getMessage());
+            error_log("Error eliminando la disco con id: $id ". $th->getMessage());
         } finally{
             $db = null;
         }
