@@ -15,6 +15,7 @@ class PistaModel extends Model{
         try {
             $stmt = $db->prepare($sql);
             $stmt->bindValue(":id",$id,PDO::PARAM_INT);
+            $stmt->execute();
             foreach ($stmt as $b) {
                 $pista = new PistaVO(
                     $b["id_disco"],
@@ -26,7 +27,7 @@ class PistaModel extends Model{
                 $pistas[] = $pista;
             }
         } catch (PDOException $e) {
-            echo "Error al hacer la consulta: ".$e->getMessage();
+            error_log("Error al hacer la consulta: ".$e->getMessage()) ;
         } finally{
             $db = null;
         }

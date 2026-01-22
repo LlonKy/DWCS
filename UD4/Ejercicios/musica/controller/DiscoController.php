@@ -57,4 +57,21 @@ class DiscoController {
             Response::notFound();
         }
     }
+
+    public function showDiscosBanda(int $id){
+        $discos = DiscoModel::getDiscosBanda($id);
+
+        if (!isset($discos)) {
+            Response::notFound();
+            return;
+        }
+
+        $discosJson = [];
+
+        foreach ($discos as $d) {
+            $discosJson[] = $d->toArray();
+        }
+
+        Response::json($discosJson, 200);
+    }
 }

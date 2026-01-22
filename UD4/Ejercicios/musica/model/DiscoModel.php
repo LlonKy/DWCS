@@ -32,6 +32,35 @@ class DiscoModel extends Model{
         return $discos;
     }
 
+    public static function getDiscosBanda(int $id){
+        $sql = "SELECT * from disco where id_banda = :id";
+
+        try {
+            $db = self::getConnection();
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(":id",$id,PDO::PARAM_INT);
+            $stmt->execute();
+            $discos = [];
+
+            foreach ($stmt as $b) {
+                $disco = new DiscoVO(
+                    $b["id"],
+                    $b["titulo"],
+                    $b["anho"],
+                    $b["id_banda"]
+                );
+
+                $discos[] = $disco;
+            }
+        } catch (PDOException $th) {
+            error_log("Error al recuperar los datos: ".$th->getMessage());
+        } finally{
+            $db = null;
+        }
+
+        return $discos;
+    }
+
     public static function getById(int $id){
          $sql = "SELECT * from disco Where id = :id";
         $db = self::getConnection();
@@ -62,9 +91,9 @@ class DiscoModel extends Model{
     public static function add(DiscoVO $vo):DiscoVO|false{
         $sql = "INSERT INTO disco (titulo,anho,id_banda)
         VALUES (:titulo, :anho, :id_banda)";
-        $db = self::getConnection();
 
-        try {
+    try {
+            $db = self::getConnection();
             $stmt = $db->prepare($sql);
             $stmt->bindValue(":titulo", $vo->getTitulo(), PDO::PARAM_STR);
             $stmt->bindValue(":anho", $vo->getAnho(), PDO::PARAM_INT);
