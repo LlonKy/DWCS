@@ -27,3 +27,10 @@ CREATE TABLE pista(
     CONSTRAINT fk_pista_disco FOREIGN KEY (id_disco) REFERENCES disco(id)
         ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+CREATE TABLE users(
+    id_user int primary key AUTO_INCREMENT,
+    nombre VARCHAR(50) not null,
+    email VARCHAR(60) not null unique,
+    pass VARCHAR(256) not null 
+);

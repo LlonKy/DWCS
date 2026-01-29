@@ -1,11 +1,11 @@
 <?php
+use Ejercicios\ejercicio4_2\core\Request;
+use Ejercicios\ejercicio4_2\core\Router;
 
-use Ejercicios\musica\core\Request;
-use Ejercicios\musica\core\Router;
-require_once "globals.php";
-//Cargando configuracion
-$env = parse_ini_file();
+//Cargamos configuracion
+$_ENV = parse_ini_file(__DIR__.'/config/.env');
 
+//Autoload
 spl_autoload_register(function ($clase) {
 
     $ruta = $_SERVER['DOCUMENT_ROOT'] . '/' . str_replace('\\', '/', $clase) . '.php';
@@ -17,10 +17,9 @@ spl_autoload_register(function ($clase) {
 });
 
 
-
 $request = new Request();
 $router = new Router();
 
-require_once "config/routes.php";
+require_once 'config/routes.php';
 
 $router->dispatch($request);

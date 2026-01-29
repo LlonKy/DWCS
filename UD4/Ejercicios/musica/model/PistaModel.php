@@ -55,7 +55,7 @@ class PistaModel extends Model{
             $db = null;
         }
 
-        return $id ? self::getById($id) : false;
+        return $id ? self::get($id)[0] : false;
     }
 
     public static function update(PistaVO $vo):PistaVO|false{
